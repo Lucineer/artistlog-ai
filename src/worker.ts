@@ -249,6 +249,9 @@ async function router(request: Request, env: Env): Promise<Response> {
     });
   }
 
+  if (pathname === '/health') return new Response(JSON.stringify({ status: 'ok', repo: 'artistlog-ai', timestamp: Date.now() }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  if (pathname === '/vessel.json') { try { const vj = await import('./vessel.json', { with: { type: 'json' } }); return new Response(JSON.stringify(vj.default || vj), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }); } catch { return new Response('{}', { headers: { 'Content-Type': 'application/json' } }); } }
+
   if (pathname === "/api/chat" && request.method === "POST") return handleChat(request, env);
   if (pathname.startsWith("/api/artworks")) return handleArtworks(request);
   if (pathname.startsWith("/api/gallery")) return handleGallery(request);

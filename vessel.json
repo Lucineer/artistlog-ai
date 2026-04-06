@@ -1,0 +1,14 @@
+{
+  "name": "artistlog-ai",
+  "displayName": "Artistlog",
+  "version": "1.0.0",
+  "type": "cocapn-vessel",
+  "category": "lifestyle",
+  "description": "AI-powered Artistlog companion",
+  "icon": "ship",
+  "endpoints": ["/", "/health", "/vessel.json"],
+  "deployment": {
+    "platform": "cloudflare-workers",
+    "url": "https://artistlog-ai.casey-digennaro.workers.dev"
+  }
+}
