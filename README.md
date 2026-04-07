@@ -1,73 +1,48 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Lucineer/capitaine/master/docs/capitaine-logo.jpg" alt="Capitaine" width="120">
-</p>
+# artistlog-ai 🖌️
 
-<h1 align="center">artistlog-ai</h1>
+You commit at 2am with the message `fixed it`. Three days later you can't remember what you fixed.
 
-<p align="center">A persistent creative log for artists.</p>
-<p align="center">
-  <a href="https://artistlog-ai.casey-digennaro.workers.dev">Live Demo</a> ·
-  <a href="#quick-start">Quick Start</a> ·
-  <a href="#features">Features</a> ·
-  <a href="#the-fleet">The Fleet</a>
-</p>
+This remembers for you.
 
 ---
 
-artistlog-ai is an agent that learns from your project's commit history to provide context-aware feedback. It's designed to persist across your creative sessions without requiring you to re-explain your work.
-
-Built on [Capitaine](https://github.com/Lucineer/capitaine) and deployed as a single-file Cloudflare Worker.
-
-## Why this exists
-
-Most AI creative tools are designed for quick generation, not long-term collaboration. This tool is built to accompany the iterative, non-linear process of making art—remembering your project's history so you can focus on the next iteration.
-
-## What makes this different
-
-This is a self-deployed agent:
-- You deploy and control it. No third-party service can change or remove it.
-- It reads from your Git repository to understand your project's context.
-- Your data and conversations stay in your deployment.
-- It uses Cloudflare Workers, which remain free for typical usage.
-
-**Limitation:** It requires your project to be in a Git repository and for you to provide API keys for the LLM.
+## Why This Exists
+Artists don't write good changelogs. You work in bursts, forget context, and abandon half-finished changes for weeks. This tool was built for people who make things, not for people who write perfect documentation. It reconstructs your project's story from your Git commit history.
 
 ## Quick Start
+This is a fork-first project. You deploy your own private instance.
 
-Fork this repository and deploy it to Cloudflare Workers:
+1.  **Fork this repository.** This becomes your modifiable copy.
+2.  Clone your fork and deploy it:
+    ```bash
+    gh repo fork Lucineer/artistlog-ai --clone
+    cd artistlog-ai
+    npx wrangler login
+    echo "your-github-token" | npx wrangler secret put GITHUB_TOKEN
+    echo "your-llm-api-key" | npx wrangler secret put DEEPSEEK_API_KEY
+    npx wrangler deploy
+    ```
+3.  Modify the tracker modules in `./art/tracker` to match your creative workflow (e.g., portfolio versions, sketch iterations).
 
-```bash
-gh repo fork Lucineer/artistlog-ai --clone
-cd artistlog-ai
-npx wrangler login
-echo "your-github-token" | npx wrangler secret put GITHUB_TOKEN
-echo "your-llm-key" | npx wrangler secret put DEEPSEEK_API_KEY
-npx wrangler deploy
-```
+## What It Does
+- **Commit-Aware Memory:** Analyzes your Git history to map how your project evolved. No extra logging is required.
+- **Native Art Tracking:** Provides a structure for tracking portfolios, commissions, gallery versions, and exhibition timelines.
+- **Your Infrastructure:** Bring your own LLM API key (default is DeepSeek). Runs entirely on Cloudflare's global network. There are no runtime dependencies.
+- **Your Data:** All data—your commits, your project context—stays within your deployed Worker. Nothing is sent to external servers for training.
 
-Your agent will be live at your Worker's URL.
+## What Makes It Different
+1.  **It Only Remembers.** It will not critique, edit, or suggest changes to your work. Its sole function is to reconstruct and explain your own history.
+2.  **Private by Design.** Every user runs a separate instance. There is no shared database or central service.
+3.  **Built for Vague Commits.** It is designed to parse unclear, tired, or minimal commit messages—the kind artists actually write.
 
-## Features
-
-- **Context Memory:** Reads your Git commit history to understand project evolution.
-- **Multi-Model Support:** Works with DeepSeek, SiliconFlow, and other providers via BYOK v2.
-- **Self-Contained:** Single-file Worker with no external runtime dependencies.
-- **Privacy-Focused:** No data is used for training; sensitive data is automatically filtered.
-
-## Architecture
-
-The entire application is a single Cloudflare Worker (`src/worker.ts`). It serves a frontend and handles agent logic, with separate modules for model routing and session management.
-
-## The Fleet
-
-artistlog-ai is part of the Cocapn Fleet, a collection of autonomous, interoperable agents. Each vessel is a standalone intelligence designed for a specific domain.
-
-<div align="center">
-  <p>
-    <a href="https://the-fleet.casey-digennaro.workers.dev">Explore The Fleet</a> · 
-    <a href="https://cocapn.ai">Learn About Cocapn</a>
-  </p>
-</div>
+## A Real Limitation
+The tool's memory is constrained by your LLM's context window (default ~128K tokens). Very long, complex project histories may need to be queried in specific date ranges instead of all at once.
 
 ---
-Attribution: Superinstance & Lucineer (DiGennaro et al.) · MIT License · Cloudflare Workers
+
+**Live Example:** [https://artistlog-ai.casey-digennaro.workers.dev](https://artistlog-ai.casey-digennaro.workers.dev)
+
+Open source under the MIT license.  
+Attribution: Superinstance and Lucineer (DiGennaro et al.)
+
+<div style="text-align:center;padding:16px;color:#64748b;font-size:.8rem"><a href="https://the-fleet.casey-digennaro.workers.dev" style="color:#64748b">The Fleet</a> &middot; <a href="https://cocapn.ai" style="color:#64748b">Cocapn</a></div>
